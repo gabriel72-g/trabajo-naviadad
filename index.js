@@ -1,119 +1,89 @@
-const series = "https://gateway.marvel.com:443/v1/public/events?ts=1&apikey=51ad38030902c1c6fdfa29a0d2773578&hash=0c918638222c7ac46664ab3eaa4844e8&limit=10";
-const section = document.getElementById("comics");
-
-let offset = 0;
-
+const usuarios_API = "http://localhost:3000/usuarios";
+const usuario = document.getElementById("nombre");
+const contraseña = document.getElementById("contraseña");
+const h4 = document.createElement("h4");
+const boton = document.createElement("button");
+boton.textContent = "Enviar";
+const input = document.createElement("input");
 /**
- * esta función hace la extructura de la forma en que tienen que aparecer los comics
- *
+ * Esta función comprueba si el usuario existe en el archivo json lugo comprueba a trabes del tocken  si el usuario 
+ * ya ha entrado o no, si no ha entrado borra el carrito y añade su id como tocken, por ultimo genera la zona de 
+ * donde se comprueba si el usuario es un robot o no.
  */
-function formaDeMostrar(info) {
-    if (!document.getElementById(info.id) ) {
-
-        console.log("nombre imagen"+info.thumbnail.path+"."+info.thumbnail.extension)
-        const div = document.createElement("div");
-        const img = document.createElement("img");
-        div.className = "fotos";
-        let id = info.id;
-        div.id = info.id;
-        img.src = info.thumbnail.path === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available" ? "img/no-image.jpg" : info.thumbnail.path+"."+info.thumbnail.extension;
-        div.appendChild(img);
-        section.appendChild(div);
-
-
-        img.addEventListener("click", () => {
-            sessionStorage.setItem("id", id);
-            window.location.href = "comics.html";
-        })
-    }
-}
-
-/**
- * Esta función lo que hace es de la api sacar la información de los comics y luego darle el diseño de la función
- * formaDeMostrar
- */
-function mostrarComics() {
-    const url = "https://gateway.marvel.com:443/v1/public/comics?ts=1&apikey=51ad38030902c1c6fdfa29a0d2773578&hash=0c918638222c7ac46664ab3eaa4844e8&limit=8&offset="+offset;
-    fetch(url)
-        .then(res => res.json())
-        .then(data => {
-            const personajes = data.data.results;
-            personajes.forEach(element => {
-                formaDeMostrar(element);
-            });
-
-            offset += 8;
-             
-        });
-}
-/**
- * Aesta función lo que hace es que cuando el usuario llega casi al final de la pagina llama a la función des mostrar los
- * comics y muestra más 
- * @param {*} funtipo 
- */
-function scroll(funtipo){
-    window.addEventListener("scroll", () => {
-        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 100) {
-            funtipo();
-    
-        }
-    })
-}
-
-const lista = document.getElementById("lista");
-/**
- * muestra las diferentes series de comics que hay para elegir 
- */
-function mostrarLista(){
-fetch(series)
+function comprobacionUsuario(){
+  const entrar = document.getElementById("entrar");
+  entrar.addEventListener("click",()=>{
+    let tocken = localStorage.getItem("tocken");   
+    fetch(usuarios_API)
     .then(res => res.json())
-    .then(data => {
-        const personajes = data.data.results;
-        personajes.forEach(element => {
-            console.log("nombre:" + element.title);
-            const opcion = document.createElement("option");
-            opcion.textContent = element.title;
-            opcion.value = element.id;
-            lista.appendChild(opcion);
-        });
-
-    });
-}
-/**
- * Muestra los comics de la lista que has elegido.
- */
-function mostrarElegido(){
-lista.addEventListener("change", () => {
-    let idSerie = lista.value;
-    section.innerHTML = "";
-    const listado = "https://gateway.marvel.com:443/v1/public/events/" + idSerie + "/comics?ts=1&apikey=51ad38030902c1c6fdfa29a0d2773578&hash=0c918638222c7ac46664ab3eaa4844e8&limit=8";
-    fetch(listado)
-        .then(res => res.json())
-        .then(
-            data => {
-                const personajes = data.data.results;
-                personajes.forEach(element => {
-                    formaDeMostrar(element);
-                }
-                )
-            }
-        )
-})
-}
-/**
- * cierra la sesión del usuario y borra el carrito
- */
-function cerrarSesion(){
-    const cerrar = document.getElementById("cerrar");
-    cerrar.addEventListener("click",()=>{
+    .then(data=>{
+      const persona = data.find(user=> user.nombre === usuario.value)
+  
+      if(persona && persona.id ===tocken){
+        console.log(persona.id)
+      input.type ="text";
+      h4.textContent = antiBut();
+     
+      const dic = document.getElementById("antiboot");
+      dic.innerHTML = ""; 
+  
+      dic.appendChild(h4);
+      dic.appendChild(input);
+      dic.appendChild(boton);
+      
+      }else{
+        tocken= persona.id;
+        localStorage.setItem("tocken", tocken);
         localStorage.removeItem("guardado");
-
-        window.location.href = "./login.html";
-        console.log("cerrarsesion")
+      }
     })
+  })  
 }
-mostrarComics();
-scroll(mostrarComics);
-mostrarLista();
-mostrarElegido();
-cerrarSesion();
+/**
+ * Esta función comprueba a traves de lo que se ha generado en la función comprobacionUsuario que si el usuario es
+ * un robot o no, haciendo que el usuario tenga que escribir lo que genere la función antiBut
+ */
+function comprobacionRobot(){
+  boton.addEventListener("click",()=>{
+
+    if(input.value === h4.textContent){
+      
+      location.href="principal.html";
+    
+  
+  }
+  })
+}
+/**
+ * La función registrar guarda un usuario en el archivo json
+ */
+function registrar(){
+  const registrarse = document.getElementById("registrarse");
+  registrarse.addEventListener("click",()=>{
+    fetch(usuarios_API,{
+    method: "POST",
+    body: JSON.stringify({nombre : usuario.value,password :contraseña.value})
+})});
+}
+
+/**
+ * Esta dunción genera una clave aleatoria de no más de 8 caracteres 
+ * @returns da la frase que el usuario tiene que escribir
+ */
+function antiBut(){
+  let texto = "";
+  const caracteres = [
+    "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z",
+    "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
+    "0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    for(let i =0;i<8;i++){
+      const numAleatorio = Math.floor(Math.random()*caracteres.length);
+      texto+= caracteres[numAleatorio];
+}
+
+return texto
+
+}
+comprobacionUsuario();
+comprobacionRobot();
+registrar();
