@@ -1,0 +1,29 @@
+{
+  "usuarios": [
+    {
+      "id": "1",
+      "nombre": "gabriel",
+      "password": 1234
+    },
+    {
+      "id": "6739",
+      "nombre": {},
+      "password": {}
+    },
+    {
+      "id": "91e4",
+      "nombre": "jesus",
+      "password": "213"
+    },
+    {
+      "id": "9b88",
+      "nombre": "juan",
+      "password": "2007"
+    },
+    {
+      "id": "75c0",
+      "nombre": "",
+      "password": ""
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b5271d; 
+    color: white; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+header a img {
+    width: 40px; 
+    height: auto;
+    transition: transform 0.3s ease; 
+}
+
+header a img:hover {
+    transform: scale(1.1); 
+}
+#comics{
+    display: grid;
+    grid-template-columns: repeat(3,35%);
+    margin-left: 10%;
+    
+}
+
+#comics .fotos{
+    margin-top: 2%;
+    overflow: hidden;
+
+}
+.fotos img {
+    width: 100%;
+    height: 100%; 
+    height: auto;
+    border-radius: 5px;
+    object-fit: cover;
+    
+}
+ .fotos{
+    width: 50%;
+ } 

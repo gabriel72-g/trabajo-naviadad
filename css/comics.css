@@ -1,0 +1,56 @@
+body{
+    font-family: Arial, sans-serif; 
+}
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #b5271d; 
+    color: white; 
+    padding: 10px 20px; 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+header a img {
+    width: 60px; 
+    height: auto;
+    transition: transform 0.3s ease; 
+}
+header a img:hover {
+    transform: scale(1.1); 
+}
+#personajes{
+    display: flex;
+    flex-wrap: wrap; 
+    gap: 20px; 
+    justify-content: center; 
+}
+#personajes img{
+    width: 20%;
+
+}
+
+section {
+    display: flex;
+    align-items: center; 
+      margin-bottom: 5%;
+}
+#comprar img {
+    width: 50%;
+    height: auto;
+}
+
+#add {
+    background-color: #b5271d;
+    color: white;
+    border: none;
+    padding: 3% 5%;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+#add:hover {
+
+    background-color: #701812;
+}
